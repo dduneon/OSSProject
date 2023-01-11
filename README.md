@@ -34,7 +34,11 @@ Java를 이용한 모바일 어플리케이션
 
 ---
 
+기반 오픈 소스
+
 (https://github.com/huanghaibin-dev/CalendarView)
+
+참고 오픈 소스
 
 (https://github.com/shylendramadda/android-google-calendar-sample)
 
