@@ -40,7 +40,7 @@ Java를 이용한 모바일 어플리케이션
 
 참고 오픈 소스
 
-(https://github.com/shylendramadda/android-google-calendar-sample)
+(https://github.com/shylendramadda/android-google-calendar-sample)  
 
 (https://github.com/ShirlyK/android-calendar)
 
