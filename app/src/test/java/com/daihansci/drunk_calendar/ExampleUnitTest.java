@@ -1,4 +1,4 @@
-package com.daihansci.customcalendar_ios;
+package com.daihansci.drunk_calendar;
 
 import org.junit.Test;
 

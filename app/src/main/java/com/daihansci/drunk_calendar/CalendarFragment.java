@@ -1,28 +1,33 @@
-package com.daihansci.customcalendar_ios;
+package com.daihansci.drunk_calendar;
 
-import androidx.appcompat.app.AppCompatActivity;
+import android.os.Bundle;
+
 import androidx.databinding.DataBindingUtil;
+import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
-import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
-import com.daihansci.customcalendar_ios.databinding.CalendarListBinding;
-import com.daihansci.customcalendar_ios.ui.adapter.CalendarAdapter;
-import com.daihansci.customcalendar_ios.ui.viewmodel.CalendarListViewModel;
+import com.daihansci.drunk_calendar.databinding.CalendarListBinding;
+import com.daihansci.drunk_calendar.ui.adapter.CalendarAdapter;
+import com.daihansci.drunk_calendar.ui.viewmodel.CalendarListViewModel;
 
 import java.util.ArrayList;
 
-public class CalendarActivity extends AppCompatActivity {
+public class CalendarFragment extends Fragment {
+
     private CalendarListBinding binding;
     private CalendarAdapter calendarAdapter;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.calendar_view);
-        binding = DataBindingUtil.setContentView(this, R.layout.calendar_view);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+
+        binding = DataBindingUtil.setContentView(getActivity(), R.layout.calendar_view);
         binding.setVariable(BR.model, new ViewModelProvider(this).get(CalendarListViewModel.class));
         binding.setLifecycleOwner(this);
 
@@ -33,11 +38,13 @@ public class CalendarActivity extends AppCompatActivity {
         binding.pagerCalendar.setLayoutManager(manager);
         binding.pagerCalendar.setAdapter(calendarAdapter);
         observe();
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_calendar, container, false);
 
     }
 
     private void observe() {
-        binding.getModel().mCalendarList.observe(this, new Observer<ArrayList<Object>>() {
+        binding.getModel().mCalendarList.observe(getViewLifecycleOwner(), new Observer<ArrayList<Object>>() {
             @Override
             public void onChanged(ArrayList<Object> objects) {
                 calendarAdapter.submitList(objects);
@@ -47,4 +54,5 @@ public class CalendarActivity extends AppCompatActivity {
             }
         });
     }
+
 }

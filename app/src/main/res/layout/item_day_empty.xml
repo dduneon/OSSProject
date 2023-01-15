@@ -10,7 +10,7 @@
 
         <variable
             name="model"
-            type="com.daihansci.customcalendar_ios.ui.viewmodel.EmptyViewModel" />
+            type="com.daihansci.drunk_calendar.ui.viewmodel.EmptyViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

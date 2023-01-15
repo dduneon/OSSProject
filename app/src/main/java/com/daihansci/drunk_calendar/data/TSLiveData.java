@@ -1,4 +1,4 @@
-package com.daihansci.customcalendar_ios.data;
+package com.daihansci.drunk_calendar.data;
 
 
 import androidx.lifecycle.MutableLiveData;

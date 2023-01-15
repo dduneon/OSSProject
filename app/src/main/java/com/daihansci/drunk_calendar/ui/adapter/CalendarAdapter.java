@@ -1,19 +1,18 @@
-package com.daihansci.customcalendar_ios.ui.adapter;
+package com.daihansci.drunk_calendar.ui.adapter;
 
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
-import com.daihansci.customcalendar_ios.R;
-import com.daihansci.customcalendar_ios.databinding.CalendarHeaderBinding;
-import com.daihansci.customcalendar_ios.databinding.DayItemBinding;
-import com.daihansci.customcalendar_ios.databinding.EmptyDayBinding;
-import com.daihansci.customcalendar_ios.ui.viewmodel.CalendarHeaderViewModel;
-import com.daihansci.customcalendar_ios.ui.viewmodel.CalendarViewModel;
-import com.daihansci.customcalendar_ios.ui.viewmodel.EmptyViewModel;
+import com.daihansci.drunk_calendar.R;
+import com.daihansci.drunk_calendar.databinding.CalendarHeaderBinding;
+import com.daihansci.drunk_calendar.databinding.DayItemBinding;
+import com.daihansci.drunk_calendar.databinding.EmptyDayBinding;
+import com.daihansci.drunk_calendar.ui.viewmodel.CalendarHeaderViewModel;
+import com.daihansci.drunk_calendar.ui.viewmodel.CalendarViewModel;
+import com.daihansci.drunk_calendar.ui.viewmodel.EmptyViewModel;
 import com.google.gson.Gson;
 
 import java.util.Calendar;
-import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;

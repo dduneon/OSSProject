@@ -1,9 +1,9 @@
-package com.daihansci.customcalendar_ios.bindingAdapter;
+package com.daihansci.drunk_calendar.bindingAdapter;
 
 
 import android.widget.TextView;
 
-import com.daihansci.customcalendar_ios.utils.DateFormat;
+import com.daihansci.drunk_calendar.utils.DateFormat;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;

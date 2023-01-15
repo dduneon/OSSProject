@@ -1,4 +1,4 @@
-package com.daihansci.customcalendar_ios.utils;
+package com.daihansci.drunk_calendar.utils;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

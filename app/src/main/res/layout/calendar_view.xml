@@ -10,7 +10,7 @@
 
         <variable
             name="model"
-            type="com.daihansci.customcalendar_ios.ui.viewmodel.CalendarListViewModel" />
+            type="com.daihansci.drunk_calendar.ui.viewmodel.CalendarListViewModel" />
     </data>
 
     <LinearLayout

@@ -1,4 +1,4 @@
-package com.daihansci.customcalendar_ios;
+package com.daihansci.drunk_calendar;
 
 import android.content.Context;
 import androidx.test.InstrumentationRegistry;

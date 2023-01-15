@@ -1,11 +1,8 @@
-package com.daihansci.customcalendar_ios.ui.viewmodel;
+package com.daihansci.drunk_calendar.ui.viewmodel;
 
-import android.content.Context;
-import android.view.View;
-
-import com.daihansci.customcalendar_ios.data.TSLiveData;
-import com.daihansci.customcalendar_ios.utils.DateFormat;
-import com.daihansci.customcalendar_ios.utils.Keys;
+import com.daihansci.drunk_calendar.data.TSLiveData;
+import com.daihansci.drunk_calendar.utils.DateFormat;
+import com.daihansci.drunk_calendar.utils.Keys;
 
 import java.util.ArrayList;
 import java.util.Calendar;

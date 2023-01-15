@@ -1,7 +1,7 @@
-package com.daihansci.customcalendar_ios.ui.viewmodel;
+package com.daihansci.drunk_calendar.ui.viewmodel;
 
 
-import com.daihansci.customcalendar_ios.data.TSLiveData;
+import com.daihansci.drunk_calendar.data.TSLiveData;
 
 import java.util.Calendar;
 
