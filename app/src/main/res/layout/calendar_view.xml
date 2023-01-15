@@ -20,24 +20,6 @@
 
 
         <!--헤더-->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:animateLayoutChanges="true"
-            android:background="@color/colorPrimary"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:padding="16dp"
-                android:textColor="@color/white"
-                android:text="@{model.mTitle}"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-
-        </LinearLayout>
         <!--요일-->
         <LinearLayout
             android:layout_width="match_parent"
