@@ -61,14 +61,14 @@
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/event_addBtn"
+            android:id="@+id/okBtn"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:text="이벤트 추가" />
 
         <Button
-            android:id="@+id/event_remBtn"
+            android:id="@+id/cancleBtn"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"

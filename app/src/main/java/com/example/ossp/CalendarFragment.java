@@ -1,20 +1,22 @@
 package com.example.ossp;
 
-import android.graphics.Color;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.NumberPicker;
 import android.widget.TextView;
 
 import com.github.sundeepk.compactcalendarview.CompactCalendarView;
 import com.github.sundeepk.compactcalendarview.domain.Event;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -25,10 +27,12 @@ public class CalendarFragment extends Fragment {
 
     final String TAG = "calendar test";
     private Date selectedDate = null;
-
+    private AlertDialog alertDialog;
     private SimpleDateFormat dateFormatForDisplaying = new SimpleDateFormat("yyyy-MM-dd", Locale.KOREA);
     private SimpleDateFormat dateFormatForMonth = new SimpleDateFormat("yyyy년 MM월", Locale.KOREA);
     private SimpleDateFormat dateFormatForMonth2 = new SimpleDateFormat("yyyy-MM", Locale.KOREA);
+    TextView startTime, endTime, count;
+    int pickCount;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -46,14 +50,17 @@ public class CalendarFragment extends Fragment {
 
         compactCalendarView.setFirstDayOfWeek(Calendar.MONDAY);
 
+        // NumberPicker 초기화하기
+        initDialog();
 
         // 이벤트를 추가하는 버튼
-        Button event_addBtn = (Button) v.findViewById(R.id.event_addBtn) ;
+        Button event_addBtn = (Button) v.findViewById(R.id.okBtn) ;
         event_addBtn.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(selectedDate == null)    return;
 
+                /*
                 String date = transFormat(selectedDate);
                 Date trans_date = null;
                 try {
@@ -66,10 +73,13 @@ public class CalendarFragment extends Fragment {
 
                 Event ev = new Event(Color.GREEN, time, "이벤트");
                 compactCalendarView.addEvent(ev);
+                */
+
+                alertDialog.show();
             }
         });
 
-        Button button_remove_events = (Button) v.findViewById(R.id.event_remBtn) ;
+        Button button_remove_events = (Button) v.findViewById(R.id.cancleBtn) ;
         button_remove_events.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -77,6 +87,9 @@ public class CalendarFragment extends Fragment {
             }
         });
 
+
+        /*
+        이벤트 가져오는 부분
 
         Button button_get_event = (Button) v.findViewById(R.id.button_get_event) ;
         button_get_event.setOnClickListener(new Button.OnClickListener() {
@@ -106,7 +119,7 @@ public class CalendarFragment extends Fragment {
                 textView_result2.setText("이벤트 이름 : " + info);
             }
         });
-
+        */
 
         // 이벤트 관련 코드
         compactCalendarView.setListener(new CompactCalendarView.CompactCalendarViewListener() {
@@ -146,4 +159,93 @@ public class CalendarFragment extends Fragment {
 
         return date;
     }
+
+    private void initDialog() {
+        final AlertDialog.Builder d = new AlertDialog.Builder(getContext());
+        LayoutInflater inflater = getActivity().getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.dialog_add, null);
+
+        // 요소들 객체화 시키는 부분
+        Button okBtn = dialogView.findViewById(R.id.okBtn);
+        Button cancelBtn = dialogView.findViewById(R.id.cancleBtn);
+        startTime = dialogView.findViewById(R.id.starttimeText);
+        endTime = dialogView.findViewById(R.id.endtimeText);
+        count = dialogView.findViewById(R.id.countText);
+        Button starttimeBtn = dialogView.findViewById(R.id.starttimeBtn);
+        Button endtimeBtn = dialogView.findViewById(R.id.endtimeBtn);
+        Button countBtn = dialogView.findViewById(R.id.countBtn);
+
+        d.setView(dialogView);
+        alertDialog = d.create();
+
+        /*
+
+        */
+        starttimeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+        endtimeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+        countBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final AlertDialog.Builder d2 = new AlertDialog.Builder(getContext());
+                LayoutInflater inflater = getActivity().getLayoutInflater();
+                View dialogView = inflater.inflate(R.layout.dialog_numberpicker, null);
+                final NumberPicker numberPicker = (NumberPicker) dialogView.findViewById(R.id.dialog_number_picker);
+
+                numberPicker.setMaxValue(9);
+                numberPicker.setMinValue(0);
+                numberPicker.setWrapSelectorWheel(false);
+
+                String[] displayCount = {"0.5", "1", "1.5", "2", "2.5", "3", "3.5", "4", "4.5", "5"};
+                numberPicker.setDisplayedValues(displayCount);
+                numberPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+                    @Override
+                    public void onValueChange(NumberPicker numberPicker, int i, int i1) {
+                        Log.d(TAG, "onValueChange: ");
+                    }
+                });
+                d2.setPositiveButton("Done", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Log.d(TAG, "onClick: " + numberPicker.getValue());
+                        pickCount = Integer.parseInt(displayCount[numberPicker.getValue()]);
+
+                        count.setText(Integer.toString(pickCount) + "병");
+                    }
+                });
+                d2.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                    }
+                });
+                d2.setView(dialogView);
+                AlertDialog alertDialog2 = d2.create();
+                alertDialog2.show();
+            }
+        });
+
+
+        okBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alertDialog.dismiss();
+            }
+        });
+        cancelBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alertDialog.dismiss();
+            }
+        });
+    }
+
 }
