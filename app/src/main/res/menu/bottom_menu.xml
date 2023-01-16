@@ -3,6 +3,11 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
+        android:id="@+id/main"
+        android:icon="@android:drawable/ic_dialog_info"
+        android:title="메인"
+        app:showAsAction="always|withText" />
+    <item
         android:id="@+id/calendar"
         android:icon="@android:drawable/ic_menu_my_calendar"
         android:title="달력"
