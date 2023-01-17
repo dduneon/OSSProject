@@ -62,7 +62,8 @@ public class CalendarFragment extends Fragment {
         event_addBtn.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(selectedDate == null)    return;
+                // 선택하지 않았다면 오늘 날짜를 선택하는 것으로 설정
+                if(selectedDate == null)    selectedDate = new Date();
 
                 String date = transFormat(selectedDate);
                 Date trans_date = null;
