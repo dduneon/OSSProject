@@ -30,6 +30,7 @@ import java.util.Locale;
 public class CalendarFragment extends Fragment {
 
     final String TAG = "calendar test";
+    CompactCalendarView compactCalendarView;
     private Date selectedDate = null;
     private AlertDialog alertDialog;
     private SimpleDateFormat dateFormatForDisplaying = new SimpleDateFormat("yyyy-MM-dd", Locale.KOREA);
@@ -38,13 +39,18 @@ public class CalendarFragment extends Fragment {
     TextView startTime, endTime, count;
     float pickCount = 0;
 
+    // 시간, 량을 선택했는지 확인 -> 오류 발생 방지
+    private boolean checkselst = false, checkseled = false, checkselct = false;
+
+    private DrunkEvent drunkEvent;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_calendar, container, false);
 
-        final CompactCalendarView compactCalendarView = (CompactCalendarView) v.findViewById(R.id.compactcalendar_view);
+        compactCalendarView = (CompactCalendarView) v.findViewById(R.id.compactcalendar_view);
 
         TextView textView_month = (TextView) v.findViewById(R.id.textView_month);
         TextView textView_result = (TextView) v.findViewById(R.id.textView_result);
@@ -64,19 +70,7 @@ public class CalendarFragment extends Fragment {
             public void onClick(View view) {
                 // 선택하지 않았다면 오늘 날짜를 선택하는 것으로 설정
                 if(selectedDate == null)    selectedDate = new Date();
-
-                String date = transFormat(selectedDate);
-                Date trans_date = null;
-                try {
-                    trans_date = dateFormatForDisplaying.parse(date);
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-
-                long time = trans_date.getTime();
-
-                Event ev = new Event(Color.GREEN, time, "이벤트");
-                compactCalendarView.addEvent(ev);
+                drunkEvent = new DrunkEvent();
 
                 alertDialog.show();
             }
@@ -305,6 +299,20 @@ public class CalendarFragment extends Fragment {
         okBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                // 이벤트 등록하는 부분
+                String date = transFormat(selectedDate);
+                Date trans_date = null;
+                try {
+                    trans_date = dateFormatForDisplaying.parse(date);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+
+                long time = trans_date.getTime();
+
+                Event ev = new Event(Color.GREEN, time, "이벤트");
+                compactCalendarView.addEvent(ev);
+
                 alertDialog.dismiss();
                 clearDialog();
             }
