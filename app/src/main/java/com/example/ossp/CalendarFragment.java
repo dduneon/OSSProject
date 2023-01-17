@@ -2,6 +2,8 @@ package com.example.ossp;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -13,10 +15,12 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.NumberPicker;
 import android.widget.TextView;
+import android.widget.TimePicker;
 
 import com.github.sundeepk.compactcalendarview.CompactCalendarView;
 import com.github.sundeepk.compactcalendarview.domain.Event;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -32,7 +36,7 @@ public class CalendarFragment extends Fragment {
     private SimpleDateFormat dateFormatForMonth = new SimpleDateFormat("yyyy년 MM월", Locale.KOREA);
     private SimpleDateFormat dateFormatForMonth2 = new SimpleDateFormat("yyyy-MM", Locale.KOREA);
     TextView startTime, endTime, count;
-    int pickCount;
+    float pickCount = 0;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -60,7 +64,6 @@ public class CalendarFragment extends Fragment {
             public void onClick(View view) {
                 if(selectedDate == null)    return;
 
-                /*
                 String date = transFormat(selectedDate);
                 Date trans_date = null;
                 try {
@@ -73,7 +76,6 @@ public class CalendarFragment extends Fragment {
 
                 Event ev = new Event(Color.GREEN, time, "이벤트");
                 compactCalendarView.addEvent(ev);
-                */
 
                 alertDialog.show();
             }
@@ -184,13 +186,77 @@ public class CalendarFragment extends Fragment {
         starttimeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                final AlertDialog.Builder d2 = new AlertDialog.Builder(getContext());
+                LayoutInflater inflater = getActivity().getLayoutInflater();
+                View dialogView = inflater.inflate(R.layout.dialog_timepicker, null);
+                final TimePicker timePicker = (TimePicker) dialogView.findViewById(R.id.timePicker);
+                d2.setPositiveButton("입력", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        int hour = 0, min = 0;
+                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+                            hour = timePicker.getHour();
+                            min = timePicker.getMinute();
+                        }
 
+                        String showText = "";
+                        int showHour = hour;
+
+                        if(hour >= 12) {
+                            showText += "오후";
+                            showHour -= 12;
+                        } else showText += "오전";
+
+                        showText = showText + " " + showHour + "시 " + min + "분";
+                        startTime.setText(showText);
+                    }
+                });
+                d2.setNegativeButton("취소", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                    }
+                });
+                d2.setView(dialogView);
+                AlertDialog alertDialog2 = d2.create();
+                alertDialog2.show();
             }
         });
         endtimeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                final AlertDialog.Builder d2 = new AlertDialog.Builder(getContext());
+                LayoutInflater inflater = getActivity().getLayoutInflater();
+                View dialogView = inflater.inflate(R.layout.dialog_timepicker, null);
+                final TimePicker timePicker = (TimePicker) dialogView.findViewById(R.id.timePicker);
+                d2.setPositiveButton("입력", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        int hour = 0, min = 0;
+                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+                            hour = timePicker.getHour();
+                            min = timePicker.getMinute();
+                        }
 
+                        String showText = "";
+                        int showHour = hour;
+
+                        if(hour >= 12) {
+                            showText += "오후";
+                            showHour -= 12;
+                        } else showText += "오전";
+
+                        showText = showText + " " + showHour + "시 " + min + "분";
+                        endTime.setText(showText);
+                    }
+                });
+                d2.setNegativeButton("취소", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                    }
+                });
+                d2.setView(dialogView);
+                AlertDialog alertDialog2 = d2.create();
+                alertDialog2.show();
             }
         });
         countBtn.setOnClickListener(new View.OnClickListener() {
@@ -207,22 +273,23 @@ public class CalendarFragment extends Fragment {
 
                 String[] displayCount = {"0.5", "1", "1.5", "2", "2.5", "3", "3.5", "4", "4.5", "5"};
                 numberPicker.setDisplayedValues(displayCount);
+
                 numberPicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
                     @Override
                     public void onValueChange(NumberPicker numberPicker, int i, int i1) {
                         Log.d(TAG, "onValueChange: ");
                     }
                 });
-                d2.setPositiveButton("Done", new DialogInterface.OnClickListener() {
+                d2.setPositiveButton("입력", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         Log.d(TAG, "onClick: " + numberPicker.getValue());
-                        pickCount = Integer.parseInt(displayCount[numberPicker.getValue()]);
+                        pickCount = Float.parseFloat(displayCount[numberPicker.getValue()]);
 
-                        count.setText(Integer.toString(pickCount) + "병");
+                        count.setText(Float.toString(pickCount) + "병");
                     }
                 });
-                d2.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                d2.setNegativeButton("취소", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                     }
@@ -238,14 +305,24 @@ public class CalendarFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 alertDialog.dismiss();
+                clearDialog();
             }
         });
         cancelBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 alertDialog.dismiss();
+                clearDialog();
             }
         });
+    }
+
+    // Dialog 확인 및 취소시 호출하는 메서드
+    private void clearDialog() {
+        startTime.setText("");
+        endTime.setText("");
+        count.setText("");
+        pickCount = 0;
     }
 
 }
