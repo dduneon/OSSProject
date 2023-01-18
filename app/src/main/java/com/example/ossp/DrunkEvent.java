@@ -7,6 +7,14 @@ public class DrunkEvent {
     public DrunkEvent() {
     }
 
+    public DrunkEvent(int stHour, int stMin, int edHour, int edMin, float count) {
+        this.stHour = stHour;
+        this.stMin = stMin;
+        this.edHour = edHour;
+        this.edMin = edMin;
+        this.count = count;
+    }
+
     public void setStart(int stHour, int stMin) {
         this.stHour = stHour;
         this.stMin = stMin;

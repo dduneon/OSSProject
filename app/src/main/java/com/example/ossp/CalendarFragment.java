@@ -1,7 +1,10 @@
 package com.example.ossp;
 
 import android.app.AlertDialog;
+import android.content.ContentValues;
 import android.content.DialogInterface;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Bundle;
 
@@ -27,6 +30,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.StringTokenizer;
 
 public class CalendarFragment extends Fragment {
 
@@ -40,6 +44,9 @@ public class CalendarFragment extends Fragment {
     TextView startTime, endTime, count, countTextView, statCountTextView, hourTextView, statHourTextView;
     ImageView soju1, soju2, soju3, soju4, soju5, sojuH;
     ImageView[] sojus;
+
+    DBHelper helper;
+    SQLiteDatabase db;
 
     float pickCount = 0;
 
@@ -55,6 +62,47 @@ public class CalendarFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_calendar, container, false);
 
         compactCalendarView = (CompactCalendarView) v.findViewById(R.id.compactcalendar_view);
+
+        // 데이터베이스 생성 및 초기화
+        helper = new DBHelper(getContext(), "mydb.db", null, 1);
+        db = helper.getWritableDatabase();
+        helper.onCreate(db);
+
+        String sql = "select * from mytable;";
+        Cursor c = db.rawQuery(sql, null);
+        StringTokenizer st;
+
+        while(c.moveToNext()){
+            String tmpDate = c.getString(c.getColumnIndex("drunkDate"));
+            String tmpStart = c.getString(c.getColumnIndex("drunkStart"));
+            String tmpEnd = c.getString(c.getColumnIndex("drunkEnd"));
+            String tmpCount = c.getString(c.getColumnIndex("drunkCount"));
+
+            st = new StringTokenizer(tmpStart, ":");
+            int startHour = Integer.parseInt(st.nextToken());
+            int startMin = Integer.parseInt(st.nextToken());
+
+            st = new StringTokenizer(tmpEnd, ":");
+            int endHour = Integer.parseInt(st.nextToken());
+            int endMin = Integer.parseInt(st.nextToken());
+
+            float count = Float.parseFloat(tmpCount);
+
+            DrunkEvent tmpDrunk = new DrunkEvent(startHour, startMin, endHour, endMin, count);
+
+            // 이벤트 등록하는 부분
+            Date trans_date = null;
+            try {
+                trans_date = dateFormatForDisplaying.parse(tmpDate);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+            long time = trans_date.getTime();
+
+            Event ev = new Event(Color.GREEN, time, tmpDrunk);
+            compactCalendarView.addEvent(ev);
+        }
 
         // TextView
         TextView textView_month = (TextView) v.findViewById(R.id.textView_month);
@@ -78,6 +126,8 @@ public class CalendarFragment extends Fragment {
 
         compactCalendarView.setFirstDayOfWeek(Calendar.MONDAY);
 
+        if(selectedDate == null)    selectedDate = new Date();
+
         // NumberPicker 초기화하기
         initDialog();
 
@@ -92,7 +142,7 @@ public class CalendarFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 // 선택하지 않았다면 오늘 날짜를 선택하는 것으로 설정
-                if(selectedDate == null)    selectedDate = new Date();
+
                 drunkEvent = new DrunkEvent();
 
                 alertDialog.show();
@@ -103,7 +153,10 @@ public class CalendarFragment extends Fragment {
         button_remove_events.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View view) {
-                compactCalendarView.removeAllEvents();
+                compactCalendarView.removeEvents(selectedDate);
+                String delDate = transFormat(selectedDate);
+                String sql3 = "DELETE FROM mytable WHERE drunkDate='" + delDate + "';";
+                db.execSQL(sql3);
             }
         });
 
@@ -183,7 +236,7 @@ public class CalendarFragment extends Fragment {
             int edHour = getDrunk.getEdHour();
             int edMin = getDrunk.getEdMin();
 
-            if(edHour < 12 && stHour >= 12) {
+            if(edHour < stHour) {
                 int tmpMin = stHour * 60 + stMin;
                 int todMin = 1440 - tmpMin;
 
@@ -407,6 +460,19 @@ public class CalendarFragment extends Fragment {
                     totalM = tmpMin % 60;
                 }
                 hourTextView.setText("이 날 총 " + totalH + "시간 " + totalM + "분 음주 하셨네요");
+
+                // DB에 Insert 하는 부분
+                String todayDate = transFormat(selectedDate);
+                String startTime = stHour + ":" + stMin + ":00";
+                String endTime = edHour + ":" + edMin + ":00";
+
+                ContentValues values = new ContentValues();
+                values.put("drunkDate", todayDate);
+                values.put("drunkStart", startTime);
+                values.put("drunkEnd", endTime);
+                values.put("drunkCount", drunkEvent.getCount());
+                db.insert("mytable",null, values);
+
 
                 alertDialog.dismiss();
                 clearDialog();
