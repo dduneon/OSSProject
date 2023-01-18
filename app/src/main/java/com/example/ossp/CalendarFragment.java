@@ -205,6 +205,8 @@ public class CalendarFragment extends Fragment {
 
                         showText = showText + " " + showHour + "시 " + min + "분";
                         startTime.setText(showText);
+
+                        drunkEvent.setStart(hour, min);
                         checkselst = true;
                     }
                 });
@@ -244,6 +246,8 @@ public class CalendarFragment extends Fragment {
 
                         showText = showText + " " + showHour + "시 " + min + "분";
                         endTime.setText(showText);
+
+                        drunkEvent.setEnd(hour, min);
                         checkseled = true;
                     }
                 });
@@ -286,6 +290,7 @@ public class CalendarFragment extends Fragment {
 
                         count.setText(Float.toString(pickCount) + "병");
                         checkselct = true;
+                        drunkEvent.setCount(pickCount);
                     }
                 });
                 d2.setNegativeButton("취소", new DialogInterface.OnClickListener() {
@@ -318,7 +323,7 @@ public class CalendarFragment extends Fragment {
 
                 long time = trans_date.getTime();
 
-                Event ev = new Event(Color.GREEN, time, "이벤트");
+                Event ev = new Event(Color.GREEN, time, drunkEvent);
                 compactCalendarView.addEvent(ev);
 
                 alertDialog.dismiss();
