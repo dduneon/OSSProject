@@ -16,6 +16,7 @@ import android.widget.Button;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import com.github.sundeepk.compactcalendarview.CompactCalendarView;
 import com.github.sundeepk.compactcalendarview.domain.Event;
@@ -204,6 +205,7 @@ public class CalendarFragment extends Fragment {
 
                         showText = showText + " " + showHour + "시 " + min + "분";
                         startTime.setText(showText);
+                        checkselst = true;
                     }
                 });
                 d2.setNegativeButton("취소", new DialogInterface.OnClickListener() {
@@ -242,6 +244,7 @@ public class CalendarFragment extends Fragment {
 
                         showText = showText + " " + showHour + "시 " + min + "분";
                         endTime.setText(showText);
+                        checkseled = true;
                     }
                 });
                 d2.setNegativeButton("취소", new DialogInterface.OnClickListener() {
@@ -282,6 +285,7 @@ public class CalendarFragment extends Fragment {
                         pickCount = Float.parseFloat(displayCount[numberPicker.getValue()]);
 
                         count.setText(Float.toString(pickCount) + "병");
+                        checkselct = true;
                     }
                 });
                 d2.setNegativeButton("취소", new DialogInterface.OnClickListener() {
@@ -299,6 +303,10 @@ public class CalendarFragment extends Fragment {
         okBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (!checkselct || !checkseled || !checkselst) {
+                    Toast.makeText(getContext(), "항목을 입력해주세요!", Toast.LENGTH_LONG).show();
+                    return;
+                }
                 // 이벤트 등록하는 부분
                 String date = transFormat(selectedDate);
                 Date trans_date = null;
@@ -315,6 +323,7 @@ public class CalendarFragment extends Fragment {
 
                 alertDialog.dismiss();
                 clearDialog();
+                resetCheck();
             }
         });
         cancelBtn.setOnClickListener(new View.OnClickListener() {
@@ -322,6 +331,7 @@ public class CalendarFragment extends Fragment {
             public void onClick(View view) {
                 alertDialog.dismiss();
                 clearDialog();
+                resetCheck();
             }
         });
     }
@@ -334,4 +344,9 @@ public class CalendarFragment extends Fragment {
         pickCount = 0;
     }
 
+    void resetCheck() {
+        checkselct = false;
+        checkseled = false;
+        checkselst = false;
+    }
 }
