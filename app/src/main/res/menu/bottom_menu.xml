@@ -12,9 +12,4 @@
         android:icon="@android:drawable/ic_menu_my_calendar"
         android:title="달력"
         app:showAsAction="always|withText" />
-    <item
-        android:id="@+id/stat"
-        android:icon="@android:drawable/btn_star"
-        android:title="현황"
-        app:showAsAction="always|withText" />
 </menu>

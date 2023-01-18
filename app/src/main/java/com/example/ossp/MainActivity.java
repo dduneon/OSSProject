@@ -12,7 +12,6 @@ public class MainActivity extends AppCompatActivity {
 
     MainFragment mainFragment;
     CalendarFragment calendarFragment;
-    StatFragment statFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,7 +20,6 @@ public class MainActivity extends AppCompatActivity {
 
         mainFragment = new MainFragment();
         calendarFragment = new CalendarFragment();
-        statFragment = new StatFragment();
 
         getSupportFragmentManager().beginTransaction().replace(R.id.container, mainFragment).commit();
 
@@ -36,9 +34,6 @@ public class MainActivity extends AppCompatActivity {
                         return true;
                     case R.id.calendar:
                         getSupportFragmentManager().beginTransaction().replace(R.id.container, calendarFragment).commit();
-                        return true;
-                    case R.id.stat:
-                        getSupportFragmentManager().beginTransaction().replace(R.id.container, statFragment).commit();
                         return true;
                 }
                 return false;
