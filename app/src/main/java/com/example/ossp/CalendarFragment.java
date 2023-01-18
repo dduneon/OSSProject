@@ -3,7 +3,6 @@ package com.example.ossp;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -13,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -21,8 +21,10 @@ import android.widget.Toast;
 import com.github.sundeepk.compactcalendarview.CompactCalendarView;
 import com.github.sundeepk.compactcalendarview.domain.Event;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -38,6 +40,9 @@ public class CalendarFragment extends Fragment {
     private SimpleDateFormat dateFormatForMonth = new SimpleDateFormat("yyyy년 MM월", Locale.KOREA);
     private SimpleDateFormat dateFormatForMonth2 = new SimpleDateFormat("yyyy-MM", Locale.KOREA);
     TextView startTime, endTime, count;
+    ImageView soju1, soju2, soju3, soju4, soju5, sojuH;
+    ImageView[] sojus;
+
     float pickCount = 0;
 
     // 시간, 량을 선택했는지 확인 -> 오류 발생 방지
@@ -53,9 +58,21 @@ public class CalendarFragment extends Fragment {
 
         compactCalendarView = (CompactCalendarView) v.findViewById(R.id.compactcalendar_view);
 
+        // TextView
         TextView textView_month = (TextView) v.findViewById(R.id.textView_month);
-        TextView textView_result = (TextView) v.findViewById(R.id.textView_result);
-        TextView textView_result2 = (TextView) v.findViewById(R.id.textView_result2);
+        TextView clickedDateTextView = (TextView) v.findViewById(R.id.clickedDateTextView);
+        TextView resultTextView = (TextView) v.findViewById(R.id.resultTextView);
+        TextView statTextView = (TextView) v.findViewById(R.id.statTextView);
+
+        // ImageView
+        soju1 = v.findViewById(R.id.soju1);
+        soju2 = v.findViewById(R.id.soju2);
+        soju3 = v.findViewById(R.id.soju3);
+        soju4 = v.findViewById(R.id.soju4);
+        soju5 = v.findViewById(R.id.soju5);
+        sojuH = v.findViewById(R.id.sojuHalf);
+
+        sojus = new ImageView[]{soju1, soju2, soju3, soju4, soju5, sojuH};
 
         textView_month.setText(dateFormatForMonth.format(compactCalendarView.getFirstDayOfCurrentMonth()));
 
@@ -63,6 +80,10 @@ public class CalendarFragment extends Fragment {
 
         // NumberPicker 초기화하기
         initDialog();
+
+        // 초기 오늘 날짜로 지정하기
+        String tmpDate = transFormat(new Date());
+        clickedDateTextView.setText(tmpDate);
 
         // 이벤트를 추가하는 버튼
         Button event_addBtn = (Button) v.findViewById(R.id.okBtn) ;
@@ -119,27 +140,29 @@ public class CalendarFragment extends Fragment {
         });
         */
 
-        // 이벤트 관련 코드
+        // 캘린더뷰 데이 클릭 이벤트
         compactCalendarView.setListener(new CompactCalendarView.CompactCalendarViewListener() {
             @Override
             public void onDayClick(Date dateClicked) {
-
+                resetImages();
+                Log.d(TAG, "onDayClick: ");
                 selectedDate = dateClicked;
                 List<Event> events = compactCalendarView.getEvents(dateClicked);
 
-                SimpleDateFormat transFormat = new SimpleDateFormat("yyyy-MM-dd");
+                SimpleDateFormat transFormat = new SimpleDateFormat("M월 d일");
                 String date1 = transFormat.format(dateClicked);
 
-                String event_name = "";
-                String event_date = "";
-
                 if (events.size() > 0) {
-                    event_name = events.get(0).getData().toString();
-                    long time1 = events.get(0).getTimeInMillis();
-                    event_date = transFormat.format(new Date(time1));
+                    DrunkEvent getDrunk = (DrunkEvent) events.get(0).getData();
+                    float showCount = getDrunk.getCount();
+                    resultTextView.setText("이 날은 음주를 " + showCount + "병을 하셨네요");
+                    for(int i=0; i<showCount; i++) {
+                        sojus[i].setVisibility(View.VISIBLE);
+                    }
+                    if(showCount%1 != 0)    sojus[5].setVisibility(View.VISIBLE);
                 }
 
-                textView_result.setText("클릭한 날짜 " + date1 + " event 정보 " + event_name + " " + event_date);
+                clickedDateTextView.setText(date1);
 
             }
 
@@ -151,8 +174,13 @@ public class CalendarFragment extends Fragment {
         return v;
     }
 
+    void resetImages() {
+        for(int i=0; i<6; i++) {
+            sojus[i].setVisibility(View.GONE);
+        }
+    }
     private String transFormat(Date d) {
-        SimpleDateFormat transFormat = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat transFormat = new SimpleDateFormat("MM월 dd일");
         String date = transFormat.format(d);
 
         return date;
