@@ -21,10 +21,8 @@ import android.widget.Toast;
 import com.github.sundeepk.compactcalendarview.CompactCalendarView;
 import com.github.sundeepk.compactcalendarview.domain.Event;
 
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -38,8 +36,8 @@ public class CalendarFragment extends Fragment {
     private AlertDialog alertDialog;
     private SimpleDateFormat dateFormatForDisplaying = new SimpleDateFormat("yyyy-MM-dd", Locale.KOREA);
     private SimpleDateFormat dateFormatForMonth = new SimpleDateFormat("yyyy년 MM월", Locale.KOREA);
-    private SimpleDateFormat dateFormatForMonth2 = new SimpleDateFormat("yyyy-MM", Locale.KOREA);
-    TextView startTime, endTime, count;
+    private SimpleDateFormat dateFormatForKor = new SimpleDateFormat("M월 d일", Locale.KOREA);
+    TextView startTime, endTime, count, countTextView, statCountTextView, hourTextView, statHourTextView;
     ImageView soju1, soju2, soju3, soju4, soju5, sojuH;
     ImageView[] sojus;
 
@@ -61,8 +59,10 @@ public class CalendarFragment extends Fragment {
         // TextView
         TextView textView_month = (TextView) v.findViewById(R.id.textView_month);
         TextView clickedDateTextView = (TextView) v.findViewById(R.id.clickedDateTextView);
-        TextView resultTextView = (TextView) v.findViewById(R.id.resultTextView);
-        TextView statTextView = (TextView) v.findViewById(R.id.statTextView);
+        countTextView = (TextView) v.findViewById(R.id.countTextView);
+        statCountTextView = (TextView) v.findViewById(R.id.statCountTextView);
+        hourTextView = (TextView) v.findViewById(R.id.hourTextView);
+        statHourTextView = (TextView) v.findViewById(R.id.statHourTextView);
 
         // ImageView
         soju1 = v.findViewById(R.id.soju1);
@@ -82,8 +82,9 @@ public class CalendarFragment extends Fragment {
         initDialog();
 
         // 초기 오늘 날짜로 지정하기
-        String tmpDate = transFormat(new Date());
+        String tmpDate = dateFormatForKor.format(new Date());
         clickedDateTextView.setText(tmpDate);
+        loadEvent(new Date());
 
         // 이벤트를 추가하는 버튼
         Button event_addBtn = (Button) v.findViewById(R.id.okBtn) ;
@@ -108,7 +109,7 @@ public class CalendarFragment extends Fragment {
 
 
         /*
-        이벤트 가져오는 부분
+        이벤트 가져오는 부분 삭제했다고 기술하기
 
         Button button_get_event = (Button) v.findViewById(R.id.button_get_event) ;
         button_get_event.setOnClickListener(new Button.OnClickListener() {
@@ -146,22 +147,10 @@ public class CalendarFragment extends Fragment {
             public void onDayClick(Date dateClicked) {
                 resetImages();
                 Log.d(TAG, "onDayClick: ");
-                selectedDate = dateClicked;
-                List<Event> events = compactCalendarView.getEvents(dateClicked);
+                loadEvent(dateClicked);
 
                 SimpleDateFormat transFormat = new SimpleDateFormat("M월 d일");
-                String date1 = transFormat.format(dateClicked);
-
-                if (events.size() > 0) {
-                    DrunkEvent getDrunk = (DrunkEvent) events.get(0).getData();
-                    float showCount = getDrunk.getCount();
-                    resultTextView.setText("이 날은 음주를 " + showCount + "병을 하셨네요");
-                    for(int i=1; i<=showCount; i++) {
-                        sojus[i].setVisibility(View.VISIBLE);
-                    }
-                    if(showCount%1 != 0)    sojus[5].setVisibility(View.VISIBLE);
-                }
-
+                String date1 = transFormat.format(selectedDate);
                 clickedDateTextView.setText(date1);
 
             }
@@ -174,6 +163,44 @@ public class CalendarFragment extends Fragment {
         return v;
     }
 
+
+    void loadEvent(Date d) {
+        selectedDate = d;
+        List<Event> events = compactCalendarView.getEvents(selectedDate);
+        int totalH, totalM;
+
+        if (events.size() > 0) {
+            DrunkEvent getDrunk = (DrunkEvent) events.get(0).getData();
+            float showCount = getDrunk.getCount();
+            countTextView.setText("이 날은 음주를 " + showCount + "병을 하셨네요");
+            for(int i=1; i<=showCount; i++) {
+                sojus[i].setVisibility(View.VISIBLE);
+            }
+            if(showCount%1 != 0)    sojus[5].setVisibility(View.VISIBLE);
+
+            int stHour = getDrunk.getStHour();
+            int stMin = getDrunk.getStMin();
+            int edHour = getDrunk.getEdHour();
+            int edMin = getDrunk.getEdMin();
+
+            if(edHour < 12 && stHour >= 12) {
+                int tmpMin = stHour * 60 + stMin;
+                int todMin = 1440 - tmpMin;
+
+                todMin += edHour * 60 + edMin;
+                totalH = todMin / 60;
+                totalM = todMin % 60;
+            } else {
+                int tmpMin = (edHour * 60 + edMin) - (stHour * 60 + stMin);
+                totalH = tmpMin / 60;
+                totalM = tmpMin % 60;
+            }
+            hourTextView.setText("이 날 총 " + totalH + "시간 " + totalM + "분 음주 하셨네요");
+        } else {
+            countTextView.setText("이 날은 음주를 안하셨습니다!");
+            hourTextView.setText("이 날 총 0시간 음주 하셨네요");
+        }
+    }
     void resetImages() {
         for(int i=0; i<6; i++) {
             sojus[i].setVisibility(View.GONE);
@@ -353,6 +380,33 @@ public class CalendarFragment extends Fragment {
 
                 Event ev = new Event(Color.GREEN, time, drunkEvent);
                 compactCalendarView.addEvent(ev);
+
+                float showCount = drunkEvent.getCount();
+                countTextView.setText("이 날은 음주를 " + showCount + "병을 하셨네요");
+                for(int i=1; i<=showCount; i++) {
+                    sojus[i].setVisibility(View.VISIBLE);
+                }
+                if(showCount%1 != 0)    sojus[5].setVisibility(View.VISIBLE);
+
+                int stHour = drunkEvent.getStHour();
+                int stMin = drunkEvent.getStMin();
+                int edHour = drunkEvent.getEdHour();
+                int edMin = drunkEvent.getEdMin();
+                int totalH, totalM;
+
+                if(edHour < 12 && stHour >= 12) {
+                    int tmpMin = stHour * 60 + stMin;
+                    int todMin = 1440 - tmpMin;
+
+                    todMin += edHour * 60 + edMin;
+                    totalH = todMin / 60;
+                    totalM = todMin % 60;
+                } else {
+                    int tmpMin = (edHour * 60 + edMin) - (stHour * 60 + stMin);
+                    totalH = tmpMin / 60;
+                    totalM = tmpMin % 60;
+                }
+                hourTextView.setText("이 날 총 " + totalH + "시간 " + totalM + "분 음주 하셨네요");
 
                 alertDialog.dismiss();
                 clearDialog();
