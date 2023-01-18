@@ -156,7 +156,7 @@ public class CalendarFragment extends Fragment {
                     DrunkEvent getDrunk = (DrunkEvent) events.get(0).getData();
                     float showCount = getDrunk.getCount();
                     resultTextView.setText("이 날은 음주를 " + showCount + "병을 하셨네요");
-                    for(int i=0; i<showCount; i++) {
+                    for(int i=1; i<=showCount; i++) {
                         sojus[i].setVisibility(View.VISIBLE);
                     }
                     if(showCount%1 != 0)    sojus[5].setVisibility(View.VISIBLE);
@@ -180,7 +180,7 @@ public class CalendarFragment extends Fragment {
         }
     }
     private String transFormat(Date d) {
-        SimpleDateFormat transFormat = new SimpleDateFormat("MM월 dd일");
+        SimpleDateFormat transFormat = new SimpleDateFormat("yyyy-MM-dd");
         String date = transFormat.format(d);
 
         return date;
